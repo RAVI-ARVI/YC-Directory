@@ -1,5 +1,8 @@
+import { auth } from "@/auth";
 import SearchForm from "@/components/SearchForm";
-import StartupCard from "@/components/StartupCard";
+import StartupCard, { StartupTypeCard } from "@/components/StartupCard";
+import { sanityFetch, SanityLive } from "@/sanity/lib/live";
+import { STARTUPS_QUERY } from "@/sanity/lib/queries";
 
 export default async function Home({
   searchParams,
@@ -8,19 +11,22 @@ export default async function Home({
 }) {
   const query = (await searchParams).query;
   const params = { search: query || null };
-  const posts = [
-    {
-      _createdAt: new Date(),
-      views: 55,
-      author: { _id: 1, name: "Ravi" },
-      _id: 1,
-      description: "This is a description",
-      image:
-        "https://st.depositphotos.com/1010652/3868/v/950/depositphotos_38686185-stock-illustration-cartoon-snack.jpg",
-      category: "Robots",
-      title: "We robots",
-    },
-  ];
+  const session = await auth();
+
+  const { data: posts } = await sanityFetch({ query: STARTUPS_QUERY, params });
+
+  //   {
+  //     _createdAt: new Date(),
+  //     views: 55,
+  //     author: { _id: 1, name: "Ravi" },
+  //     _id: 1,
+  //     description: "This is a description",
+  //     image:
+  //       "https://st.depositphotos.com/1010652/3868/v/950/depositphotos_38686185-stock-illustration-cartoon-snack.jpg",
+  //     category: "Robots",
+  //     title: "We robots",
+  //   },
+  // ];
   return (
     <>
       <section className="pink_container ">
@@ -50,6 +56,7 @@ export default async function Home({
           )}
         </ul>
       </section>
+      <SanityLive />
     </>
   );
 }
